@@ -9,4 +9,6 @@ add_executable(LeakSlicer main.cpp
         Importer.hpp
         Importer.hpp
         Model.hpp
-        Importer.hpp)
+        Importer.hpp
+        Slicer.hpp
+)

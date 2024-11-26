@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <array>
+#include <openstl/core/stl.h>
 
 struct Point {
     float X, Y, Z;
@@ -25,15 +27,30 @@ struct Triangle {
 
 #include "Model.hpp"
 #include "Importer.hpp"
+#include "Slicer.hpp"
 
+void example() {
+    std::ifstream file("../Dataset.stl", std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file '" << "../Dataset.stl" << "'" << std::endl;
+    }
+
+    // Deserialize the triangles in either binary or ASCII format
+    std::vector<openstl::Triangle> triangles = openstl::deserializeStl(file);
+    for(const auto& el : triangles) {
+        std::cout << el.normal.z << std::endl;
+    }
+    file.close();
+}
 
 int main() {
     Model Dataset;
-    Importer Import("Dataset.stl", &Dataset);
+    Importer Handler("../Dataset.stl");
+    Handler.importSTL(&Dataset);
 
-    for(const auto& Tr : Dataset.Faces) {
-        std::cout << Tr.Normal.X << " " << Tr.Normal.Y << " " << Tr.Normal.Z << std::endl;
-    }
+    Handler.exportSTL("../FinalTest.stl", &Dataset);
+
+    Slicer Sl(0.3, Dataset);
 
     return 0;
 }
